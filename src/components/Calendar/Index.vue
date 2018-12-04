@@ -1,26 +1,28 @@
 <template>
 	<div class='v-calendar'>
- 	<table class='dateZone'>
- 		<tr>
- 			<td class='colo'>日</td>
- 			<td>一</td>
- 			<td>二</td>
- 			<td>三</td>
- 			<td>四</td>
- 			<td>五</td>
- 			<td class='colo'>六</td>
- 		</tr>
- 	</table>
- 	<div class='tbody'>
- 		<div class="m" v-for="item,monthIndex in Callist">
- 			<div class='ny1'> {{ item.year }} 年 {{ item.month < 10?"0"+item.month:item.month }} 月</div>
- 			<table class='dateTable'>
- 				<tr v-for="row,index in Math.ceil(item.trData.length/7)">
- 					<td v-for="col,i in days" @click="selectDate(monthIndex,item.trData[index*7+i],$event)" :data-set="item.year+'-'+item.month+'-'+item.trData[index*7+i]" v-bind:class="{'active today':item.trData[index*7+i]==today&&monthIndex==0,'gray':item.trData[index*7+i]<today&&monthIndex==0}"><p>{{ item.month+"-"+item.trData[index*7+i] | dateText }}</p><p>{{ item.year + "-" +item.month + "-" + item.trData[index*7+i] | lunarday}}</p></td>
- 				</tr>
- 			</table>
- 		</div>
- 	</div>
+		<div class="canlendar-wrapper">
+		 	<table class='dateZone'>
+		 		<tr>
+		 			<td class='colo'>日</td>
+		 			<td>一</td>
+		 			<td>二</td>
+		 			<td>三</td>
+		 			<td>四</td>
+		 			<td>五</td>
+		 			<td class='colo'>六</td>
+		 		</tr>
+		 	</table>
+		 	<div class='tbody'>
+		 		<div class="m" v-for="item,monthIndex in Callist">
+		 			<div class='ny1'> {{ item.year }} 年 {{ item.month < 10?"0"+item.month:item.month }} 月</div>
+		 			<table class='dateTable'>
+		 				<tr v-for="row,index in Math.ceil(item.trData.length/7)">
+		 					<td v-for="col,i in days" @click="selectDate(monthIndex,item.trData[index*7+i],$event)" :data-set="item.year+'-'+item.month+'-'+item.trData[index*7+i]" v-bind:class="{'active today':item.trData[index*7+i]==today&&monthIndex==0,'gray':item.trData[index*7+i]<today&&monthIndex==0}"><p>{{ item.trData[index*7+i] }}</p><p>{{ item.year + "-" +item.month + "-" + item.trData[index*7+i] | dateText}}</p></td>
+		 				</tr>
+		 			</table>
+		 		</div>
+		 	</div>
+	 	</div>
 	</div>
 </template>
 <script>
@@ -44,8 +46,12 @@
 		filters:{
 			dateText(value){
 				if(value.indexOf("undefined")!=-1) return "";
-				let m = parseInt(value.split("-")[0])<10?"0"+parseInt(value.split("-")[0]):parseInt(value.split("-")[0])+"";
-				let d = parseInt(value.split("-")[1])<10?"0"+parseInt(value.split("-")[1]):parseInt(value.split("-")[1])+"";
+				let m = parseInt(value.split("-")[1])<10?"0"+parseInt(value.split("-")[1]):parseInt(value.split("-")[1])+"";
+				let d = parseInt(value.split("-")[2])<10?"0"+parseInt(value.split("-")[2]):parseInt(value.split("-")[2])+"";
+				
+				let y1 = value.split("-")[0];
+				let m1 = value.split("-")[1];
+				let d1 = value.split("-")[2];
 				
 				let curDate = new Date().getMonth()+1 == value.split("-")[0] && new Date().getDate() == value.split("-")[1];
 				let tomorrow = new Date().getMonth()+1 == value.split("-")[0] && new Date().getDate() + 1 == parseInt(value.split("-")[1]);
@@ -53,22 +59,11 @@
 				let text = "";
 				if(holiday[k]){
 					text = holiday[k];
-				}else if(curDate){
-					text = "今天";
-				}else if(tomorrow){
-					text = "明天";
 				}
 				else{
-					text = value.split("-")[1];
+					text = lunarday.GetLunarDay(y1,m1,d1).substr(2,2);
 				}
 				return text;
-			},
-			lunarday(value){
-				if(value.indexOf("undefined")!=-1) return "";
-				let y = value.split("-")[0];
-				let m = value.split("-")[1];
-				let d = value.split("-")[2];
-				return lunarday.GetLunarDay(y,m,d).substr(2,2);
 			}
 		},
 		methods:{
@@ -258,71 +253,81 @@
 <style lang="scss" $scoped>
 .v-calendar{
 	width: 100%;
-	overflow: auto;
-	height:auto;
+	overflow:hidden;
+	height:100%;
 	background: #fff;
 	font-size: 16px;
-	position: relative;
-	.dateZone{
-		width:100%;
-		margin:auto;
-		background:#ffffff;
-		border-bottom:1PX solid #ddd;
-		border-top:1PX solid #ddd;
-		color:#666;
-		z-index:9999;
-		td{
-			background:#ffffff;
-			height:30px;
-			line-height: 30px;
-			width:14.2%;
-			font-size: 14px;
-		}
-		.colo{
-			color:#fa967f;
-		}
-	}
-	.tbody {
-    margin-top :0 !important;
-		.m{
-			overflow: hidden;
-			border-bottom:1PX solid #ddd;
-			table{
-				border-color:#ddd;
-			}
-			.dateTable{
-				width:99.4%;
-				margin:auto;
-
-				td{
-					background:#fff;
-					color: #555;
-					width:14.2%;
-					font-size: 14px;
-				}
-				td.active{
-					background-color:#74b3fe ;
-					color:#fff;
-					border-radius: 5px;
-				}
-				td.gray{
-					color:#ccc!important;
-				}
-				td.selected{
-					background-color: #d9e4f1;
-				}
-			}
-		}
-		.ny1{
+	.canlendar-wrapper{
+		
+		position: relative;
+		width: 100%;
+		height:auto;
+		overflow-y:scroll;
+		.dateZone{
 			width:100%;
-			text-align:center;
-			padding:5px 0;
-			color: #555;
-			background-color: #FAFAFA;
+			margin:auto;
+			background:#ffffff;
 			border-bottom:1PX solid #ddd;
-			font-size: 15px;
-			line-height: 28px;
+			border-top:1PX solid #ddd;
+			color:#666;
+			z-index:9999;
+			position:fixed;
+			top:0;
+			left:0;
+			td{
+				background:#ffffff;
+				height:30px;
+				line-height: 30px;
+				width:14.2%;
+				font-size: 14px;
+			}
+			.colo{
+				color:#fa967f;
+			}
 		}
+		.tbody {
+	    margin-top :48px;
+			.m{
+				overflow: hidden;
+				border-bottom:1PX solid #ddd;
+				table{
+					border-color:#ddd;
+				}
+				.dateTable{
+					width:99.4%;
+					margin:auto;
+	
+					td{
+						background:#fff;
+						color: #555;
+						width:14.2%;
+						font-size: 14px;
+					}
+					td.active{
+						background-color:#74b3fe ;
+						color:#fff;
+						border-radius: 5px;
+					}
+					td.gray{
+						color:#ccc!important;
+					}
+					td.selected{
+						background-color: #d9e4f1;
+					}
+				}
+			}
+			.ny1{
+				width:100%;
+				text-align:center;
+				padding:5px 0;
+				color: #555;
+				background-color: #FAFAFA;
+				border-bottom:1PX solid #ddd;
+				font-size: 15px;
+				line-height: 28px;
+			}
+		}
+	
 
 	}
 	table{
@@ -332,6 +337,7 @@
 		text-align:center;
 		padding:8px 0;
 		p{
+			pointer-events: none;
 			height:20px;
 			line-height:20px;
 			font-size: 12px;

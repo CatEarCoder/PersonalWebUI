@@ -39,6 +39,8 @@ export default {
    	tmp+=(cDay<11)?"初":((cDay<20)?"十":((cDay<30)?"廿":"三十"));
    	if (cDay%10!=0||cDay==10){
     	tmp+=numString.charAt((cDay-1)%10);
+   	}else{
+   		tmp+="十";
    	}
    	return tmp;
   },
