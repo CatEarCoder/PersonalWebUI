@@ -304,15 +304,15 @@
 						font-size: 14px;
 					}
 					td.active{
-						background-color:#74b3fe ;
+						background-color:#2eb6a8 ;
 						color:#fff;
 						border-radius: 5px;
 					}
 					td.gray{
-						color:#ccc!important;
+						color:#a2a2a2!important;
 					}
 					td.selected{
-						background-color: #d9e4f1;
+						background-color: #e0f4f2;
 					}
 				}
 			}
