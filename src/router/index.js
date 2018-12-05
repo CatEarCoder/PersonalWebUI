@@ -14,6 +14,11 @@ export default new Router({
     	path: '/calendar',
       name: 'Calendar',
       component: resolve => require(['@/components/Calendar/Demo'], resolve),
+    },
+    {
+    	path: '/popup',
+      name: 'Popup',
+      component: resolve => require(['@/components/Popup/Demo'], resolve),
     }
   ]
 })
