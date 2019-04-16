@@ -3,7 +3,6 @@
 		<button class="stepper__minus" @click="minus" :disabled="minusDisabled||disabled" :class="{'stepper__minus--disabled':minusDisabled,'stepper__minus--disabled':disabled}"></button>
 		<input class="stepper__input" type="number" v-model.trim="currentValue" :disabled="disabled" @input="handChange">
 		<button class="stepper__plus" @click="plus" :disabled="plusDisabled||disabled"  :class="{'stepper__plus--disabled':plusDisabled,'stepper__plus--disabled':disabled}"></button>
-		{{ minusDisabled }} {{ plusDisabled }}
 	</div>
 </template>
 
@@ -85,6 +84,7 @@
 	}
 	.stepper {
 		font-size: 0;
+		height:28px;
 	}
 	.stepper__input {
 		width: 30px;
@@ -96,7 +96,8 @@
 		box-sizing: content-box;
 		color: #323233;
 		font-size: 14px;
-		vertical-align: top;
+		vertical-align: middle;
+		vertical-align: -webkit-baseline-middle;
 		text-align: center;
 		-webkit-appearance: none;
 	}
